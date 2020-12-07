@@ -3,7 +3,7 @@ BOARD ?= rpi4
 
 # =====
 _REPO_NAME = pikvm
-_REPO_KEY = 912C773ABBD1B584
+_REPO_KEY = RKVM 
 _REPO_DEST = root@pikvm.org:/var/www/
 
 _BUILDENV_IMAGE = pikvm/packages-buildenv-$(BOARD)
