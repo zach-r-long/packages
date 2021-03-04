@@ -3,6 +3,7 @@
 
 
 _variants=(
+	v0-hdmi:zerow
 	v0-hdmi:rpi
 	v0-hdmi:rpi2
 	v0-hdmi:rpi3
@@ -28,7 +29,7 @@ for _variant in "${_variants[@]}"; do
 	pkgname+=(kvmd-platform-$_platform-$_board)
 done
 pkgbase=kvmd
-pkgver=2.9
+pkgver=2.29
 pkgrel=1
 pkgdesc="The main Pi-KVM daemon"
 url="https://github.com/pikvm/kvmd"
@@ -67,7 +68,7 @@ depends=(
 	iproute2
 	dnsmasq
 	"raspberrypi-io-access>=0.5"
-	"ustreamer>=1.19"
+	"ustreamer>=3.17"
 
 	# Avoid dhcpcd stack trace
 	dhclient
@@ -117,8 +118,8 @@ package_kvmd() {
 	chmod 750 "$_cfg_default/os/sudoers"
 	chmod 400 "$_cfg_default/os/sudoers"/*
 
-	mkdir -p "$pkgdir/etc/kvmd/nginx/ssl"
-	chmod 750 "$pkgdir/etc/kvmd/nginx/ssl"
+	mkdir -p "$pkgdir/etc/kvmd/{nginx,vnc}/ssl"
+	chmod 755 "$pkgdir/etc/kvmd/{nginx,vnc}/ssl"
 	install -Dm444 -t "$pkgdir/etc/kvmd/nginx" "$_cfg_default/nginx"/*.conf
 	chmod 644 "$pkgdir/etc/kvmd/nginx/nginx.conf"
 
@@ -139,14 +140,14 @@ for _variant in "${_variants[@]}"; do
 		cd \"kvmd-\$pkgver\"
 
 		pkgdesc=\"Pi-KVM platform configs - $_platform for $_board\"
-		depends=(kvmd=$pkgver-$pkgrel \"raspberrypi-bootloader>=20201214-3\" \"raspberrypi-bootloader-x>=20201214-3\" \"raspberrypi-firmware>=20201214-3\")
+		depends=(kvmd=$pkgver-$pkgrel \"raspberrypi-bootloader>=20210216-1\" \"raspberrypi-bootloader-x>=20210216-1\" \"raspberrypi-firmware>=20210128-2\" \"linux-firmware>=20210221.b79d239-1\")
 
 		if [[ $_platform =~ ^.*-hdmi$ ]]; then
 			depends=(\"\${depends[@]}\")
 			if [ $_board == rpi4 ]; then
-				depends=(\"\${depends[@]}\" \"linux-raspberrypi4>=5.4.69\" \"linux-raspberrypi4-headers>=5.4.69\")
+				depends=(\"\${depends[@]}\" \"linux-raspberrypi4>=5.10.16-3\" \"linux-raspberrypi4-headers>=5.10.16-3\")
 			else
-				depends=(\"\${depends[@]}\" \"linux-raspberrypi>=5.4.69\" \"linux-raspberrypi-headers>=5.4.69\")
+				depends=(\"\${depends[@]}\" \"linux-raspberrypi>=5.10.16-3\" \"linux-raspberrypi-headers>=5.10.16-3\")
 			fi
 		fi
 
